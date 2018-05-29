@@ -29,14 +29,15 @@ module.exports = function(app, db) {
 	});
 
 	app.get('/recipes', (req, res) => {
-		Recipe.find({}, (err, results) => {
-			if (err) {
-				console.log(err);
-				res.status(500).send({"error" : err});
-			}
-			else
-				res.send(results);
-		});
+		Recipe.find({}).
+			populate('mats.recipe').
+				exec((err, recipes) => {
+					if (err) {
+						console.log(err);
+						res.status(500).send(err);
+					}
+					res.send(recipes);
+				});
 	
 	});
 
